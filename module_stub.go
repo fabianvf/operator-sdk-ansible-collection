@@ -1,77 +1,33 @@
-package main
+package // TODO package name
 
 import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"os"
+
+	helpers "github.com/operator-framework/operator-sdk-ansible-collection/pkg/ansible/mod_helpers"
 )
 
 type ModuleArgs struct {
-	// TODO: define the arguments your module takes here
+	// TODO: Define the arguments your module takes here
 }
 
 type Response struct {
-	Msg     string `json:"msg"`
-	Changed bool   `json:"changed"`
-	Failed  bool   `json:"failed"`
-	// TODO: Additional response fields go here
-}
-
-func ExitJson(responseBody Response) {
-	returnResponse(responseBody)
-}
-
-func FailJson(responseBody Response) {
-	responseBody.Failed = true
-	returnResponse(responseBody)
-}
-
-func returnResponse(responseBody Response) {
-	var response []byte
-	var err error
-	response, err = json.Marshal(responseBody)
-	if err != nil {
-		response, _ = json.Marshal(Response{Msg: "Invalid response object"})
-	}
-	fmt.Println(string(response))
-	if responseBody.Failed {
-		os.Exit(1)
-	} else {
-		os.Exit(0)
-	}
+	helpers.BaseResponse
+	// TODO: Add additional response fields here
 }
 
 func main() {
 	var response Response
-
-	if len(os.Args) != 2 {
-		response.Msg = "No argument file provided"
-		FailJson(response)
-	}
-
-	argsFile := os.Args[1]
-
-	text, err := ioutil.ReadFile(argsFile)
-	if err != nil {
-		response.Msg = "Could not read configuration file: " + argsFile
-		FailJson(response)
-	}
-
 	var moduleArgs ModuleArgs
-	err = json.Unmarshal(text, &moduleArgs)
+
+	err := helpers.ParseArgs(os.Args, &moduleArgs)
 	if err != nil {
-		response.Msg = "Configuration file not valid JSON: " + argsFile
-		FailJson(response)
+		response.Msg = err.Error()
+		helpers.ExitJSON(response, true)
 	}
 
-	run(moduleArgs, response)
-}
+	// TODO: Implement business logic here
+	response.Changed = false
+	respose.Msg = "Did business logic"
 
-func run(args ModuleArgs, response Response) {
-	// TODO: Modules logic goes here
-	if false {
-		FailJson(response)
-	}
-	ExitJson(response)
+	helpers.ExitJSON(response, false)
 }

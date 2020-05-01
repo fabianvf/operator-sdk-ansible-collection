@@ -20,10 +20,6 @@ type Response struct {
 func main() {
 	var response Response
 
-	run(response)
-}
-
-func run(response Response) {
 	version := ver.GitVersion
 	if version == "unknown" {
 		version = ver.Version
