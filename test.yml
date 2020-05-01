@@ -5,7 +5,7 @@
 
   tasks:
     - name: Get version of operator-sdk modules are using
-      version:
+      version_info:
       register: version
     - debug:
         var: version

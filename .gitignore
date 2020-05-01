@@ -4,6 +4,8 @@
 *.dll
 *.so
 *.dylib
+operator_framework-operator_sdk-0.0.1.tar.gz
+plugins/modules/*
 
 # Test binary, built with `go test -c`
 *.test
