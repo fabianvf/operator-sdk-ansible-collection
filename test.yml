@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  collections:
+    - operator_framework.operator_sdk
+
+  tasks:
+    - name: Get version of operator-sdk modules are using
+      version:
+      register: version
+    - debug:
+        var: version
+

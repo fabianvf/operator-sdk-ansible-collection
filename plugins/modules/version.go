@@ -5,17 +5,20 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+
+	ver "github.com/operator-framework/operator-sdk/version"
 )
 
-type ModuleArgs struct {
-	// TODO: define the arguments your module takes here
-}
+type ModuleArgs struct{}
 
 type Response struct {
-	Msg     string `json:"msg"`
-	Changed bool   `json:"changed"`
-	Failed  bool   `json:"failed"`
-	// TODO: Additional response fields go here
+	Msg                string `json:"msg"`
+	Changed            bool   `json:"changed"`
+	Failed             bool   `json:"failed"`
+	OperatorSDKVersion string `json:"operator_sdk_version,omitempty"`
+	GitCommit          string `json:"git_commit,omitempty"`
+	KubernetesVersion  string `json:"kubernetes_version,omitempty"`
+	GoVersion          string `json:"go_version,omitempty"`
 }
 
 func ExitJson(responseBody Response) {
@@ -69,9 +72,18 @@ func main() {
 }
 
 func run(args ModuleArgs, response Response) {
-	// TODO: Modules logic goes here
-	if false {
-		FailJson(response)
+	version := ver.GitVersion
+	if version == "unknown" {
+		version = ver.Version
 	}
+
+	response.OperatorSDKVersion = version
+	response.GitCommit = ver.GitCommit
+	response.KubernetesVersion = ver.KubernetesVersion
+	response.GoVersion = ver.GoVersion
+
+	response.Msg = fmt.Sprintf("operator-sdk version: %s, commit: %s, kubernetes version: %s, go version: %s",
+		version, ver.GitCommit, ver.KubernetesVersion, ver.GoVersion)
+
 	ExitJson(response)
 }
