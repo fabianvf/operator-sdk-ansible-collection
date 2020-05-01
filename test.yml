@@ -11,14 +11,14 @@
         var: version
     - name: validate bundle
       bundle_validate:
-        file_path: "/Users/shawnhurley/repos/operator-framwork/operator-sdk-ansible-collection/testdata/3scale-operator-bad"
+        file_path: "{{ playbook_dir }}/testdata/3scale-operator-bad"
       register: validation
       ignore_errors: true
     - debug:
         var: validation
     - name: validate ok bundle
       bundle_validate:
-        file_path: "/Users/shawnhurley/repos/operator-framwork/operator-sdk-ansible-collection/testdata/3scale-operator"
+        file_path: "{{ playbook_dir }}/testdata/3scale-operator"
       register: validation_ok
       ignore_errors: true
     - debug:

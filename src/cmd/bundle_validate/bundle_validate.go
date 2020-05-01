@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/operator-framework/api/pkg/manifests"
 	"github.com/operator-framework/operator-registry/pkg/lib/bundle"
@@ -20,7 +21,7 @@ type ModuleArgs struct {
 
 type Response struct {
 	helpers.BaseResponse
-	VerboseOutput string   `json:"verbose_output"`
+	VerboseOutput []string `json:"verbose_output"`
 	Errors        []string `json:"errors"`
 	Warnings      []string `json:"warnings"`
 }
@@ -75,7 +76,7 @@ func main() {
 			response.Errors = append(response.Errors, err.Error())
 			response.Failed = true
 		}
-		response.VerboseOutput = buf.String()
+		response.VerboseOutput = strings.Split(buf.String(), "\n")
 	}
 
 	if response.Failed {
