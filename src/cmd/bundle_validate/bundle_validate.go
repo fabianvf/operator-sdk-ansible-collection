@@ -8,6 +8,7 @@ import (
 	"github.com/operator-framework/api/pkg/manifests"
 	"github.com/operator-framework/operator-registry/pkg/lib/bundle"
 	helpers "github.com/operator-framework/operator-sdk-ansible-collection/pkg/ansible/mod_helpers"
+	"github.com/sirupsen/logrus"
 )
 
 type ModuleArgs struct {
@@ -42,7 +43,7 @@ func main() {
 	}
 
 	if moduleArgs.FilePath != "" {
-		if isExist(moduleArgs.FilePath) {
+		if !isExist(moduleArgs.FilePath) {
 			response.BaseResponse.Msg = "File Path must point to existing file"
 			response.BaseResponse.Failed = true
 			helpers.ExitJSON(response, true)
@@ -53,14 +54,14 @@ func main() {
 		logrus.SetOutput(buf)
 		val := bundle.NewImageValidator("", logger)
 
-		if err := val.ValidateBundleFormat(dir); err != nil {
+		if err := val.ValidateBundleFormat(moduleArgs.FilePath); err != nil {
 			response.Errors = append(response.Errors, err.Error())
 			response.Failed = true
 		}
 
 		// Validate bundle content.
 		manifestsDir := filepath.Join(moduleArgs.FilePath, bundle.ManifestsDir)
-		_, _, validationResults := manifests.GetManifestsDir(dir)
+		_, _, validationResults := manifests.GetManifestsDir(moduleArgs.FilePath)
 		for _, result := range validationResults {
 			for _, e := range result.Errors {
 				response.Errors = append(response.Errors, e.Error())
